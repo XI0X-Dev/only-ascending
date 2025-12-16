@@ -22,7 +22,7 @@ const MASTER_ACCESS_CODE = process.env.MASTER_ACCESS_CODE || 'AscendedOnly';
 app.use(cors());
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ limit: '20mb', extended: true }));
-app.use(express.static('.'));
+app.use(express.static('public'));
 
 // Concurrent request limiter
 let activeRequests = 0;
