@@ -1,23 +1,23 @@
 // State
 let faceRefFile = null;
 let targetFiles = [];
-let apiKey = ''; // No localStorage - force re-entry each session
+let apiKey = ''; // Loaded from Supabase after login
 let queue = [];
 let currentPreview = { rowIndex: 0, varIndex: 0 };
 let selectedDimensions = '3072*4096';
 let currentUser = '';
 
 // ============================================
-// AUTH
+// AUTH - NEW SUPABASE SYSTEM
 // ============================================
 
-async function verifyPassword() {
+async function login() {
   const username = document.getElementById('usernameInput').value.trim();
   const password = document.getElementById('passwordInput').value;
   const errorDiv = document.getElementById('loginError');
 
   try {
-    const response = await fetch('/api/verify-password', {
+    const response = await fetch('/api/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
@@ -27,10 +27,16 @@ async function verifyPassword() {
 
     if (data.success) {
       currentUser = data.username;
+      apiKey = data.apiKey; // Load API key from database
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('mainApp').style.display = 'block';
       sessionStorage.setItem('authenticated', 'true');
       sessionStorage.setItem('user', currentUser);
+      sessionStorage.setItem('apiKey', apiKey);
+      
+      // Auto-fill API key
+      document.getElementById('apiKeyInput').value = apiKey;
+      showStatus('apiStatus', 'API KEY LOADED FROM ACCOUNT', 'success');
     } else {
       errorDiv.textContent = 'INVALID CREDENTIALS';
       errorDiv.style.display = 'block';
@@ -43,20 +49,26 @@ async function verifyPassword() {
 
 function logout() {
   sessionStorage.clear();
-  apiKey = ''; // Clear API key on logout
+  apiKey = '';
   location.reload();
 }
 
 // Check auth on load
 if (sessionStorage.getItem('authenticated') === 'true') {
   currentUser = sessionStorage.getItem('user');
+  apiKey = sessionStorage.getItem('apiKey');
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('mainApp').style.display = 'block';
+  
+  // Auto-fill API key
+  if (apiKey) {
+    document.getElementById('apiKeyInput').value = apiKey;
+  }
 }
 
 // Enter key handlers
 document.getElementById('passwordInput')?.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') verifyPassword();
+  if (e.key === 'Enter') login();
 });
 document.getElementById('usernameInput')?.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') document.getElementById('passwordInput').focus();
@@ -290,17 +302,7 @@ function renderQueue() {
                     <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                   </svg>
                 </button>
-                ${result.processingNSFW ? `
-                  <div class="processing-badge">GENERATING...</div>
-                ` : `
-                  <button onclick="removeClothing(${index}, ${varIndex})" class="icon-button nsfw-button" title="Generate NSFW">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                      <circle cx="8" cy="10" r="4" fill="currentColor" stroke="none"/>
-                      <circle cx="16" cy="10" r="4" fill="currentColor" stroke="none"/>
-                      <path d="M8 6 Q12 2 16 6" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-                    </svg>
-                  </button>
-                `}
+
                 <a href="${result.url}" download="result_${varIndex + 1}.jpg" class="icon-button">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -467,70 +469,6 @@ async function downloadAllRow(index) {
 
 // ============================================
 // REMOVE CLOTHING (NSFW)
-// ============================================
-
-async function removeClothing(rowIndex, varIndex) {
-  const item = queue[rowIndex];
-  const result = item.results[varIndex];
-  
-  if (!result || !result.url) {
-    alert('NO IMAGE TO PROCESS');
-    return;
-  }
-  
-  if (!apiKey) {
-    alert('API KEY REQUIRED');
-    return;
-  }
-  
-  // Mark as processing
-  result.processingNSFW = true;
-  renderQueue();
-  
-  try {
-    console.log(`Generating NSFW version of result ${varIndex + 1} in row ${rowIndex}`);
-    
-    // Fetch the image as blob
-    const imageResponse = await fetch(result.url);
-    const imageBlob = await imageResponse.blob();
-    
-    // Prepare form data
-    const formData = new FormData();
-    formData.append('apiKey', apiKey);
-    formData.append('image', imageBlob, 'image.jpg');
-    
-    // Call clothing removal API
-    const response = await fetch('/api/remove-clothing', {
-      method: 'POST',
-      body: formData
-    });
-    
-    if (!response.ok) throw new Error(`API ERROR: ${response.status}`);
-    
-    const data = await response.json();
-    
-    if (data.success) {
-      // Add NSFW version to results array (keeps original)
-      item.results.push({
-        url: data.outputUrl,
-        index: item.results.length,
-        isNSFW: true
-      });
-      
-      console.log('NSFW version generated successfully');
-    } else {
-      throw new Error(data.error || 'GENERATION FAILED');
-    }
-    
-  } catch (error) {
-    console.error('Error generating NSFW version:', error);
-    alert(`NSFW GENERATION FAILED: ${error.message}`);
-  } finally {
-    result.processingNSFW = false;
-    renderQueue();
-  }
-}
-
 // ============================================
 // BULK SELECTION
 // ============================================
