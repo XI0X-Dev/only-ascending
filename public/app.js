@@ -11,7 +11,7 @@ let currentUser = '';
 // AUTH - NEW SUPABASE SYSTEM
 // ============================================
 
-async function login() {
+async function loginUser() {
   const username = document.getElementById('usernameInput').value.trim();
   const password = document.getElementById('passwordInput').value;
   const errorDiv = document.getElementById('loginError');
@@ -68,7 +68,7 @@ if (sessionStorage.getItem('authenticated') === 'true') {
 
 // Enter key handlers
 document.getElementById('passwordInput')?.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') login();
+  if (e.key === 'Enter') loginUser();
 });
 document.getElementById('usernameInput')?.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') document.getElementById('passwordInput').focus();
