@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>THE DOM PROTOCOL</title>
+  <title>ONLY ASCENDING</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -21,24 +21,30 @@
   <!-- Login Screen -->
   <div id="loginScreen" class="login-container">
     <div class="login-glass">
-      <div class="protocol-logo">THE DOM PROTOCOL</div>
-      <div class="login-subtitle">AUTHORIZED ACCESS ONLY</div>
+      <div class="protocol-logo">ONLY ASCENDING</div>
+      <div class="login-subtitle">EXCLUSIVE ACCESS</div>
       <div class="input-group-vertical">
         <input 
           type="text" 
           id="usernameInput" 
-          placeholder="Client ID"
+          placeholder="Username"
           class="glass-input"
         >
         <input 
           type="password" 
           id="passwordInput" 
-          placeholder="Access Code"
+          placeholder="Password"
           class="glass-input"
         >
       </div>
-      <button onclick="verifyPassword()" class="glass-button primary">INITIATE PROTOCOL</button>
+      <button onclick="login()" class="glass-button primary">INITIATE ASCENSION</button>
       <div id="loginError" class="error-text"></div>
+      
+      <div style="margin-top: 20px; text-align: center;">
+        <a href="signup.html" style="color: #888; font-size: 11px; text-decoration: none; letter-spacing: 1px;">
+          NEW USER? CREATE ACCOUNT
+        </a>
+      </div>
     </div>
   </div>
 
@@ -47,7 +53,7 @@
     
     <!-- Header -->
     <div class="header">
-      <div class="protocol-logo-small">THE DOM PROTOCOL</div>
+      <div class="protocol-logo-small">ONLY ASCENDING</div>
       <button onclick="logout()" class="glass-button ghost">TERMINATE SESSION</button>
     </div>
 
@@ -176,3 +182,4 @@
 
 </body>
 </html>
+
