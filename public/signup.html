@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - ONLY ASCENDING</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  
+  <div class="background-container"></div>
+
+  <div class="login-container">
+    <div class="login-glass">
+      <div class="protocol-logo">ONLY ASCENDING</div>
+      <div class="login-subtitle">CREATE YOUR ACCOUNT</div>
+      
+      <div class="input-group-vertical">
+        <input 
+          type="text" 
+          id="masterCodeInput" 
+          placeholder="Master Access Code"
+          class="glass-input"
+        >
+        <input 
+          type="text" 
+          id="usernameInput" 
+          placeholder="Choose Username"
+          class="glass-input"
+        >
+        <input 
+          type="password" 
+          id="passwordInput" 
+          placeholder="Choose Password (min 6 chars)"
+          class="glass-input"
+        >
+        <input 
+          type="text" 
+          id="apiKeyInput" 
+          placeholder="WaveSpeed API Key"
+          class="glass-input"
+        >
+      </div>
+      
+      <button onclick="register()" class="glass-button primary">CREATE ACCOUNT</button>
+      
+      <div id="statusMessage" class="error-text"></div>
+      
+      <div style="margin-top: 20px; text-align: center;">
+        <a href="index.html" style="color: #888; font-size: 11px; text-decoration: none; letter-spacing: 1px;">
+          ALREADY HAVE AN ACCOUNT? LOGIN
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function register() {
+      const masterCode = document.getElementById('masterCodeInput').value.trim();
+      const username = document.getElementById('usernameInput').value.trim();
+      const password = document.getElementById('passwordInput').value;
+      const apiKey = document.getElementById('apiKeyInput').value.trim();
+      const statusDiv = document.getElementById('statusMessage');
+
+      // Clear previous messages
+      statusDiv.style.display = 'none';
+
+      // Validate inputs
+      if (!masterCode || !username || !password || !apiKey) {
+        statusDiv.textContent = 'ALL FIELDS REQUIRED';
+        statusDiv.style.display = 'block';
+        return;
+      }
+
+      if (username.length < 3) {
+        statusDiv.textContent = 'USERNAME TOO SHORT';
+        statusDiv.style.display = 'block';
+        return;
+      }
+
+      if (password.length < 6) {
+        statusDiv.textContent = 'PASSWORD TOO SHORT';
+        statusDiv.style.display = 'block';
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ masterCode, username, password, apiKey })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Success - redirect to login
+          alert('ACCOUNT CREATED! Redirecting to login...');
+          window.location.href = 'index.html';
+        } else {
+          statusDiv.textContent = (data.error || 'REGISTRATION FAILED').toUpperCase();
+          statusDiv.style.display = 'block';
+        }
+      } catch (error) {
+        statusDiv.textContent = 'CONNECTION ERROR';
+        statusDiv.style.display = 'block';
+      }
+    }
+
+    // Enter key handlers
+    document.getElementById('apiKeyInput')?.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') register();
+    });
+  </script>
+
+</body>
+</html>
