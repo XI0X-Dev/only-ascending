@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 10000;
 app.use(cors());
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ limit: '20mb', extended: true }));
-app.use(express.static('public'));
+app.use(express.static('.'));
 
 // Concurrent request limiter
 let activeRequests = 0;
