@@ -38,7 +38,7 @@
           id="passwordInput" 
           placeholder="Choose Password (min 6 chars)"
           class="glass-input"
-          autocomplete="off"
+          autocomplete="new-password"
         >
         <input 
           type="text" 
@@ -71,6 +71,7 @@
 
       // Clear previous messages
       statusDiv.style.display = 'none';
+      statusDiv.style.color = '#ef4444';
 
       // Validate inputs
       if (!masterCode || !username || !password || !apiKey) {
@@ -101,16 +102,15 @@
         const data = await response.json();
 
         if (data.success) {
-  // Show success message
-  statusDiv.textContent = 'ACCOUNT CREATED! REDIRECTING...';
-  statusDiv.style.color = '#10b981';
-  statusDiv.style.display = 'block';
-  
-  // Redirect after 2 seconds
-  setTimeout(() => {
-    window.location.href = 'index.html';
-  }, 2000);
-}
+          // Show success message
+          statusDiv.textContent = 'ACCOUNT CREATED! REDIRECTING...';
+          statusDiv.style.color = '#10b981';
+          statusDiv.style.display = 'block';
+          
+          // Redirect after 2 seconds
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 2000);
         } else {
           statusDiv.textContent = (data.error || 'REGISTRATION FAILED').toUpperCase();
           statusDiv.style.display = 'block';
