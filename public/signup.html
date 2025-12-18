@@ -101,9 +101,16 @@
         const data = await response.json();
 
         if (data.success) {
-          // Success - redirect to login
-          alert('ACCOUNT CREATED! Redirecting to login...');
-          window.location.href = 'index.html';
+  // Show success message
+  statusDiv.textContent = 'ACCOUNT CREATED! REDIRECTING...';
+  statusDiv.style.color = '#10b981';
+  statusDiv.style.display = 'block';
+  
+  // Redirect after 2 seconds
+  setTimeout(() => {
+    window.location.href = 'index.html';
+  }, 2000);
+}
         } else {
           statusDiv.textContent = (data.error || 'REGISTRATION FAILED').toUpperCase();
           statusDiv.style.display = 'block';
