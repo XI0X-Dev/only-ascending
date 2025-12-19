@@ -611,3 +611,18 @@ function nextVariation() {
 document.getElementById('previewModal')?.addEventListener('click', (e) => {
   if (e.target.id === 'previewModal') closePreview();
 });
+
+// Tutorial video modal
+function openTutorial() {
+  const modal = document.getElementById('tutorialModal');
+  const video = document.getElementById('tutorialVideo');
+  video.src = 'https://www.youtube.com/embed/CzQo8S8UGqQ';
+  modal.style.display = 'flex';
+}
+
+function closeTutorial() {
+  const modal = document.getElementById('tutorialModal');
+  const video = document.getElementById('tutorialVideo');
+  video.src = ''; // Stop video when closing
+  modal.style.display = 'none';
+}
