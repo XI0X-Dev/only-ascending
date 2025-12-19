@@ -56,7 +56,10 @@
     <!-- Header -->
     <div class="header">
       <div class="protocol-logo-small">ONLY ASCENDING</div>
+      <div style="display: flex; gap: 12px;">
+        <button onclick="openTutorial()" class="glass-button tutorial">TUTORIAL</button>
       <button onclick="logout()" class="glass-button ghost">TERMINATE SESSION</button>
+        </div>
     </div>
 
     <!-- API Key Section -->
@@ -179,6 +182,25 @@
       <a id="previewDownload" href="" download class="glass-button secondary">DOWNLOAD</a>
     </div>
   </div>
+
+  <!-- Tutorial Video Modal -->
+<div id="tutorialModal" class="modal" style="display: none;" onclick="closeTutorial()">
+  <div class="modal-glass" onclick="event.stopPropagation()">
+    <button onclick="closeTutorial()" class="modal-close">×</button>
+    <div style="position: relative; width: 90vw; max-width: 1000px; aspect-ratio: 16/9;">
+      <iframe 
+        id="tutorialVideo"
+        width="100%" 
+        height="100%" 
+        src="" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen
+        style="border-radius: 10px;">
+      </iframe>
+    </div>
+  </div>
+</div>
 
   <script src="app.js"></script>
 
